@@ -3,13 +3,13 @@ import {
   getRoomInfo,
   handleCreate,
   handleJoin,
-  // handleSendMessage,
+  leaveRoom,
 } from "./handlers/handlers";
 
 const wss = new WebSocketServer({ port: 8080 });
 
 export interface MessagePayload {
-  action: "create" | "join" | "send-message" | "get_roomInfo";
+  action: "create" | "join" | "send-message" | "get_roomInfo" | "leave";
   roomId: string;
   message?: string;
   username?: string;
@@ -46,10 +46,11 @@ wss.on("connection", (ws, req) => {
       case "join":
         handleJoin(rooms, parsedData, ws);
         break;
-      // case "send-message":
-      //   handleSendMessage(rooms, parsedData, ws);
       case "get_roomInfo":
         getRoomInfo(rooms, parsedData, ws);
+        break;
+      case "leave":
+        leaveRoom(rooms, parsedData, ws);
         break;
       default:
         break;
